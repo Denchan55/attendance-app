@@ -20,3 +20,12 @@ Route::get('/', function () {
 Route::get('/attendance', function () {
     return '打刻画面(仮)';
 })->middleware('auth');
+
+use Laravel\Fortify\Http\Controllers\AuthenticatedSessionController;
+
+Route::get('/admin/login', function () {
+    return view('admin.admin-login');
+})->middleware('guest');
+
+Route::post('/admin/login', [AuthenticatedSessionController::class, 'store'])
+    ->middleware('guest');
