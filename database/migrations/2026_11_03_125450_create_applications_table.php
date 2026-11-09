@@ -16,7 +16,7 @@ return new class extends Migration
             $table->foreignId('attendance_record_id')->constrained()->cascadeOnDelete();
             $table->date('new_date');
             $table->time('new_clock_in');
-            $table->time('new_clock_out')->nullable();
+            $table->time('new_clock_out');
             $table->string('comment');
             $table->string('approval_status')->default('承認待ち');
             $table->timestamps();
