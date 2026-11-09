@@ -7,9 +7,7 @@ use Illuminate\Database\Seeder;
 
 class AttendanceRecordSeeder extends Seeder
 {
-    /**
-     * 勤怠と休憩のダミーデータを作成する
-     */
+
     public function run(): void
     {
     $user = User::all();

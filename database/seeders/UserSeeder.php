@@ -8,9 +8,7 @@ use Illuminate\Support\Facades\Hash;
 
 class UserSeeder extends Seeder
 {
-    /**
-     * ユーザーのダミーデータを作成する
-     */
+
     public function run(): void
     {
         User::forceCreate([
