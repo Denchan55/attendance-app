@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Laravel\Fortify\Http\Controllers\AuthenticatedSessionController;
 
 /*
 |--------------------------------------------------------------------------
@@ -21,7 +22,7 @@ Route::get('/attendance', function () {
     return '打刻画面(仮)<form action="/logout" method="post">' . csrf_field() . '<button>ログアウト</button></form>';
 })->middleware('auth');
 
-use Laravel\Fortify\Http\Controllers\AuthenticatedSessionController;
+
 
 Route::get('/admin/login', function () {
     return view('admin.admin-login');
