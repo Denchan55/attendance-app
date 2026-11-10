@@ -18,6 +18,10 @@ use Laravel\Fortify\Http\Requests\LoginRequest as FortifyLoginRequest;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
+use App\Http\Responses\LoginResponse;
+use Laravel\Fortify\Contracts\LoginResponse as LoginResponseContract;
+use App\Http\Responses\LogoutResponse;
+use Laravel\Fortify\Contracts\LogoutResponse as LogoutResponseContract;
 
 class FortifyServiceProvider extends ServiceProvider
 {
@@ -27,6 +31,8 @@ class FortifyServiceProvider extends ServiceProvider
     public function register(): void
 {
     $this->app->bind(FortifyLoginRequest::class, LoginRequest::class);
+    $this->app->singleton(LoginResponseContract::class, LoginResponse::class);
+    $this->app->singleton(LogoutResponseContract::class, LogoutResponse::class);
 }
 
     /**

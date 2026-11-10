@@ -18,7 +18,7 @@ Route::get('/', function () {
 });
 
 Route::get('/attendance', function () {
-    return '打刻画面(仮)';
+    return '打刻画面(仮)<form action="/logout" method="post">' . csrf_field() . '<button>ログアウト</button></form>';
 })->middleware('auth');
 
 use Laravel\Fortify\Http\Controllers\AuthenticatedSessionController;
@@ -29,3 +29,10 @@ Route::get('/admin/login', function () {
 
 Route::post('/admin/login', [AuthenticatedSessionController::class, 'store'])
     ->middleware('guest');
+
+    Route::get('/admin/attendance/list', function () {
+    return '管理者の勤怠一覧(仮)<form action="/admin/logout" method="post">' . csrf_field() . '<button>ログアウト</button></form>';
+})->middleware('auth');
+
+Route::post('/admin/logout', [AuthenticatedSessionController::class, 'destroy'])
+    ->middleware('auth');
