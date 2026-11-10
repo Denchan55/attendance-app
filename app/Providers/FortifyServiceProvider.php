@@ -18,6 +18,10 @@ use Laravel\Fortify\Http\Requests\LoginRequest as FortifyLoginRequest;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
+use App\Http\Responses\LoginResponse;
+use Laravel\Fortify\Contracts\LoginResponse as LoginResponseContract;
+use App\Http\Responses\LogoutResponse;
+use Laravel\Fortify\Contracts\LogoutResponse as LogoutResponseContract;
 
 class FortifyServiceProvider extends ServiceProvider
 {
@@ -27,6 +31,8 @@ class FortifyServiceProvider extends ServiceProvider
     public function register(): void
 {
     $this->app->bind(FortifyLoginRequest::class, LoginRequest::class);
+    $this->app->singleton(LoginResponseContract::class, LoginResponse::class);
+    $this->app->singleton(LogoutResponseContract::class, LogoutResponse::class);
 }
 
     /**
@@ -58,10 +64,11 @@ class FortifyServiceProvider extends ServiceProvider
             return view('user.user-login');
         });
 
-        Fortify::authenticateUsing(function (Request $request) {
+Fortify::authenticateUsing(function (Request $request) {
+    $isAdminLogin = $request->is('admin/*');
     $user = User::where('email', $request->email)->first();
 
-    if ($user && Hash::check($request->password, $user->password) && ! $user->admin_status) {
+    if ($user && Hash::check($request->password, $user->password) && ($isAdminLogin ? $user->admin_status : ! $user->admin_status)) {
         return $user;
     }
 
