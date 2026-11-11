@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use Laravel\Fortify\Http\Controllers\AuthenticatedSessionController;
+use App\Http\Controllers\AttendanceController;
 
 /*
 |--------------------------------------------------------------------------
@@ -18,9 +19,10 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/attendance', function () {
-    return '打刻画面(仮)<form action="/logout" method="post">' . csrf_field() . '<button>ログアウト</button></form>';
-})->middleware('auth');
+Route::middleware('auth')->group(function () {
+    Route::get('/attendance', [AttendanceController::class, 'create']);
+    Route::post('/attendance', [AttendanceController::class, 'store']);
+});
 
 
 

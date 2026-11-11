@@ -49,5 +49,27 @@ public function attendanceRecords(): HasMany
     {
         return $this->hasMany(AttendanceRecord::class);
     }
+/**
+ * 今日の打刻ステータス(勤務外・出勤中・休憩中・退勤済)
+ */
+public function getAttendanceStatusAttribute(): string
+{
+    $record = $this->attendanceRecords()
+        ->whereDate('date', today())
+        ->first();
 
+    if (! $record) {
+        return '勤務外';
+    }
+
+    if ($record->clock_out) {
+        return '退勤済';
+    }
+
+    if ($record->breaks()->whereNull('break_out')->exists()) {
+        return '休憩中';
+    }
+
+    return '出勤中';
+}
 }
