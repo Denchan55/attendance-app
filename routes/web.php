@@ -22,6 +22,7 @@ Route::get('/', function () {
 Route::middleware('auth')->group(function () {
     Route::get('/attendance', [AttendanceController::class, 'create']);
     Route::post('/attendance', [AttendanceController::class, 'store']);
+    Route::get('/attendance/list', [AttendanceController::class, 'index']);
 });
 
 
