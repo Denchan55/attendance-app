@@ -197,30 +197,6 @@ Seeder により初期データ（書籍データ・ユーザーなど）が自�
 | PUT          | /api/v1/attendance-records/{attendanceRecord} | 勤怠更新（200 OK）         |
 | DELETE       | /api/v1/attendance-records/{attendanceRecord} | 勤怠削除（204 No Content） |
 
-## 通知機能の動作確認方法
-
-手動実行
-
-```bash
-./vendor/bin/sail artisan reading-plan:notify
-```
-
-スケジューラ実行
-
-```bash
-./vendor/bin/sail artisan schedule:run
-```
-
-スケジューラ設定（参考）
-
-```bash
-php
-protected function schedule(Schedule $schedule)
-{
-$schedule->command('reading-plan:notify')->dailyAt('20:00');
-}
-```
-
 完了
 以上で環境構築は完了です。
 アプリケーションを起動し、動作を確認してください。

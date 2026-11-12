@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\AttendanceRecord;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
+use Carbon\Carbon;
 
 class AttendanceController extends Controller
 {
@@ -69,4 +70,43 @@ private function todayRecord(User $user): AttendanceRecord
         ->whereDate('date', today())
         ->firstOrFail();
 }
+
+/**
+ * 勤怠一覧を表示する
+ */
+public function index(Request $request)
+{
+    $date = Carbon::parse($request->query('date', now()->format('Y-m')) . '-01');
+
+    $records = $request->user()->attendanceRecords()
+        ->with('breaks')
+        ->whereBetween('date', [$date->copy()->startOfMonth(), $date->copy()->endOfMonth()])
+        ->get()
+        ->keyBy('date');
+
+    $formattedAttendanceRecords = [];
+
+    for ($i = 0; $i < $date->daysInMonth; $i++) {
+        $day = $date->copy()->addDays($i);
+        $record = $records->get($day->toDateString());
+        $isFinished = $record && $record->clock_out;
+
+        $formattedAttendanceRecords[] = [
+            'id' => $record ? $record->id : null,
+            'date' => $day->locale('ja')->isoFormat('MM/DD(ddd)'),
+            'clock_in' => $record ? substr($record->clock_in, 0, 5) : '',
+            'clock_out' => $isFinished ? substr($record->clock_out, 0, 5) : '',
+            'total_break_time' => $record ? gmdate('H:i:s', $record->totalBreakSeconds()) : '',
+            'total_time' => $isFinished ? gmdate('H:i:s', $record->totalWorkSeconds()) : '',
+        ];
+    }
+
+    return view('user.user-attendance-list', [
+        'date' => $date,
+        'previousMonth' => $date->copy()->subMonth()->format('Y-m'),
+        'nextMonth' => $date->copy()->addMonth()->format('Y-m'),
+        'formattedAttendanceRecords' => $formattedAttendanceRecords,
+    ]);
+}
+
 }
