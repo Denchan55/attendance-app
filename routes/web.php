@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use Laravel\Fortify\Http\Controllers\AuthenticatedSessionController;
 use App\Http\Controllers\AttendanceController;
+use App\Http\Controllers\AttendanceRecordController;
 
 /*
 |--------------------------------------------------------------------------
@@ -23,6 +24,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/attendance', [AttendanceController::class, 'create']);
     Route::post('/attendance', [AttendanceController::class, 'store']);
     Route::get('/attendance/list', [AttendanceController::class, 'index']);
+    Route::get('/attendance/{id}', [AttendanceRecordController::class, 'show'])
+    ->whereNumber('id');
 });
 
 
