@@ -26,6 +26,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/attendance/list', [AttendanceController::class, 'index']);
     Route::get('/attendance/{id}', [AttendanceRecordController::class, 'show'])
     ->whereNumber('id');
+    Route::post('/attendance/{id}', [AttendanceRecordController::class, 'store'])
+    ->whereNumber('id');
 });
 
 

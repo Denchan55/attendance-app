@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use App\Http\Requests\AttendanceCorrectRequest;
+use Illuminate\Http\RedirectResponse;
 
 class AttendanceRecordController extends Controller
 {
@@ -52,4 +54,12 @@ class AttendanceRecordController extends Controller
             'data' => $data,
         ]);
     }
+
+    /**
+ * 修正申請を受け付ける(仮)
+ */
+public function store(AttendanceCorrectRequest $request, int $id): RedirectResponse
+{
+    return redirect('/attendance/' . $id);
+}
 }
