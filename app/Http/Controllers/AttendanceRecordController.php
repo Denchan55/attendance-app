@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Http\Requests\AttendanceCorrectRequest;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\DB;
 
 class AttendanceRecordController extends Controller
 {
@@ -55,11 +56,45 @@ class AttendanceRecordController extends Controller
         ]);
     }
 
-    /**
- * 修正申請を受け付ける(仮)
+/**
+ * 修正申請を受け付ける
  */
 public function store(AttendanceCorrectRequest $request, int $id): RedirectResponse
 {
+    $record = $request->user()->attendanceRecords()->findOrFail($id);
+
+    $hasPending = $record->applications()
+        ->where('approval_status', '承認待ち')
+        ->exists();
+
+    if ($hasPending) {
+        return redirect('/attendance/' . $id);
+    }
+
+    $data = $request->validated();
+
+    DB::transaction(function () use ($record, $data) {
+        $application = $record->applications()->create([
+            'new_date' => $record->date,
+            'new_clock_in' => $data['new_clock_in'],
+            'new_clock_out' => $data['new_clock_out'],
+            'comment' => $data['comment'],
+        ]);
+
+        foreach ($data['new_break_in'] ?? [] as $index => $breakIn) {
+            $breakOut = $data['new_break_out'][$index] ?? null;
+
+            if ($breakIn === null && $breakOut === null) {
+                continue;
+            }
+
+            $application->proposalBreaks()->create([
+                'break_in' => $breakIn,
+                'break_out' => $breakOut,
+            ]);
+        }
+    });
+
     return redirect('/attendance/' . $id);
 }
 }
