@@ -4,6 +4,8 @@ use Illuminate\Support\Facades\Route;
 use Laravel\Fortify\Http\Controllers\AuthenticatedSessionController;
 use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\AttendanceRecordController;
+use App\Http\Controllers\ApplicationController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -27,6 +29,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/attendance/{id}', [AttendanceRecordController::class, 'show'])
     ->whereNumber('id');
     Route::post('/attendance/{id}', [AttendanceRecordController::class, 'store'])
+    ->whereNumber('id');
+    Route::get('/stamp_correction_request/list', [ApplicationController::class, 'index']);
+    Route::get('/application/{id}', [ApplicationController::class, 'show'])
     ->whereNumber('id');
 });
 
