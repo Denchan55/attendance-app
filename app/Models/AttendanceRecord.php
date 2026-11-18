@@ -73,4 +73,21 @@ public function totalWorkSeconds(): ?int
     return Carbon::parse($this->clock_in)
         ->diffInSeconds(Carbon::parse($this->clock_out)) - $this->totalBreakSeconds();
 }
+/**
+ * 休憩時間の合計(H:i:s形式)
+ */
+public function getTotalBreakTimeAttribute(): string
+{
+    return gmdate('H:i:s', $this->totalBreakSeconds());
+}
+
+/**
+ * 勤務時間の合計(H:i:s形式)。退勤前は null
+ */
+public function getTotalTimeAttribute(): ?string
+{
+    $seconds = $this->totalWorkSeconds();
+
+    return $seconds === null ? null : gmdate('H:i:s', $seconds);
+}
 }

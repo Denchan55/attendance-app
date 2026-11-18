@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use Laravel\Fortify\Http\Controllers\AuthenticatedSessionController;
 use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\AttendanceRecordController;
+use App\Http\Controllers\AdminAttendanceController;
 
 /*
 |--------------------------------------------------------------------------
@@ -39,9 +40,9 @@ Route::get('/admin/login', function () {
 Route::post('/admin/login', [AuthenticatedSessionController::class, 'store'])
     ->middleware('guest');
 
-    Route::get('/admin/attendance/list', function () {
-    return '管理者の勤怠一覧(仮)<form action="/admin/logout" method="post">' . csrf_field() . '<button>ログアウト</button></form>';
-})->middleware('auth');
+Route::middleware(['auth', 'admin'])->group(function () {
+    Route::get('/admin/attendance/list', [AdminAttendanceController::class, 'index']);
+});
 
 Route::post('/admin/logout', [AuthenticatedSessionController::class, 'destroy'])
     ->middleware('auth');
